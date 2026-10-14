@@ -1,0 +1,72 @@
+{
+	"id": "conv-title",
+	"name": "对话标题",
+	"version": "0.1.0",
+	"icon": "✨",
+	"apiVersion": 2,
+	"description": "自动给对话生成标题（复用 pi-title 算法）：新一轮对话开跑时，用当前/轻量模型从提示词生成标题并同步到左侧栏；对话头部 ✨ 按钮、会话行右键可手动重生成；用户手动改过的标题永不被自动覆盖。",
+	"descriptionEn": "Automatic conversation titles (reusing pi-title's algorithm): when a new round starts running, a model titles the conversation from its prompt and the left sidebar updates. The ✨ chat-header button or a session-row right-click regenerates on demand. Titles you rename manually are never overwritten automatically.",
+	"view": false,
+	"preload": true,
+	"permissions": ["ui", "http", "chat", "llm"],
+	"settings": [
+		{
+			"key": "enabled",
+			"type": "boolean",
+			"label": "自动生成标题",
+			"default": true,
+			"hint": "新一轮对话开跑时，若该对话还没有标题（或已被用户改名则自动跳过），用模型生成并同步到左侧栏"
+		},
+		{
+			"key": "model",
+			"type": "text",
+			"label": "标题模型",
+			"default": "",
+			"hint": "留空 = 当前对话模型；auto = 优先轻量模型（gpt-5-nano / gemini-flash-lite / claude-haiku，取已配置的第一个）；或填 provider/model 指定。失败自动回落到当前对话模型"
+		},
+		{
+			"key": "refreshTurns",
+			"type": "number",
+			"label": "刷新间隔（轮）",
+			"default": 0,
+			"min": 0,
+			"max": 100,
+			"hint": "0 = 每个对话只生成一次；N = 每 N 个已回答轮次从近期对话重新生成一次"
+		},
+		{
+			"key": "maxLength",
+			"type": "number",
+			"label": "标题最大长度（字符）",
+			"default": 60,
+			"min": 8,
+			"max": 200
+		}
+	],
+	"ui": {
+		"chat.header": [
+			{
+				"id": "header-generate",
+				"label": "生成标题",
+				"labelEn": "Generate title",
+				"icon": "✨",
+				"kind": "action",
+				"action": "conv-title:generate",
+				"hint": "用模型重新生成当前对话的标题",
+				"hintEn": "Regenerate this conversation's title with a model",
+				"order": 10
+			}
+		],
+		"contextmenu.session": [
+			{
+				"id": "menu-generate",
+				"label": "✨ 生成对话标题",
+				"labelEn": "✨ Generate conversation title",
+				"kind": "action",
+				"action": "conv-title:generate",
+				"hint": "用模型为这条对话（运行中或历史）生成标题",
+				"hintEn": "Title this conversation (running or history) with a model",
+				"order": 30
+			}
+		]
+	}
+}
